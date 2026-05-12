@@ -7,7 +7,7 @@ export const useTasks = () => {
   const [tasks, setTasks] = useState<Task[]>([])
   const [loading, setLoading] = useState(true)
 
-  const loadTask = async () => {
+  const loadTask = useCallback(async () => {
     try {
       const tasks = await getTask()
       setTasks(tasks)
@@ -15,7 +15,7 @@ export const useTasks = () => {
     } catch (error) {
       console.log("error: ", error)
     }
-  }
+  }, [])
 
   const addTask = useCallback(
     async (text: string): Promise<void> => {

@@ -1,26 +1,38 @@
 import { Ionicons } from "@expo/vector-icons"
-import React,{ useState } from "react"
+import { useFocusEffect } from "expo-router"
+import React,{ useCallback,useState } from "react"
 import {
     FlatList,
     KeyboardAvoidingView,
     Modal,
     Platform,
+    Pressable,
     StatusBar,
     StyleSheet,
     Text,
     TextInput,
-    TouchableOpacity,
     View,
 } from "react-native"
 import { EmptyState } from "../components/EmptyState"
 import { TaskItem } from "../components/TaskItem"
 import { useTasks } from "../hooks/useTasks"
-import { BorderRadius,Colors,Spacing,Typography } from "../themes"
+import { useTheme } from "../hooks/useTheme"
+import { BorderRadius,Spacing,Typography } from "../themes"
 
 export function TasksScreen() {
-  const { tasks, loading, addTask, toggleTask, deleteTask } = useTasks()
+  const { colors, isDark } = useTheme()
+  const { tasks, loading, addTask, toggleTask, deleteTask, loadTask } =
+    useTasks()
   const [inputText, setInputText] = useState("")
   const [modalVisible, setModalVisible] = useState(false)
+
+  useFocusEffect(
+    useCallback(() => {
+      loadTask()
+    }, [loadTask]),
+  )
+
+  const styles = createStyles(colors)
 
   const handleAdd = async () => {
     if (!inputText.trim()) return
@@ -31,7 +43,7 @@ export function TasksScreen() {
 
   return (
     <View style={styles.screen}>
-      <StatusBar barStyle="light-content" />
+      <StatusBar barStyle={isDark ? "light-content" : "dark-content"} />
 
       <Text style={styles.title}>Tasks</Text>
 
@@ -74,19 +86,22 @@ export function TasksScreen() {
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>New Task</Text>
-              <TouchableOpacity onPress={() => setModalVisible(false)}>
+              <Pressable
+                onPress={() => setModalVisible(false)}
+                style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
+              >
                 <Ionicons
                   name="close"
                   size={24}
-                  color={Colors.textSecondary}
+                  color={colors.textSecondary}
                 />
-              </TouchableOpacity>
+              </Pressable>
             </View>
 
             <TextInput
               style={styles.input}
               placeholder="What needs to be done?"
-              placeholderTextColor={Colors.textTertiary}
+              placeholderTextColor={colors.textTertiary}
               value={inputText}
               onChangeText={setInputText}
               autoFocus
@@ -94,115 +109,118 @@ export function TasksScreen() {
               returnKeyType="done"
             />
 
-            <TouchableOpacity
-              style={[
+            <Pressable
+              style={({ pressed }) => [
                 styles.saveBtn,
                 !inputText.trim() && styles.saveBtnDisabled,
+                { opacity: pressed ? 0.8 : inputText.trim() ? 1 : 0.5 },
               ]}
               onPress={handleAdd}
               disabled={!inputText.trim()}
             >
               <Text style={styles.saveBtnText}>Add Task</Text>
-            </TouchableOpacity>
+            </Pressable>
           </View>
         </KeyboardAvoidingView>
       </Modal>
 
       {/* FAB */}
-      <TouchableOpacity
-        style={styles.fab}
+      <Pressable
+        style={({ pressed }) => [
+          styles.fab,
+          {
+            backgroundColor: colors.primary,
+            opacity: pressed ? 0.8 : 1,
+            transform: [{ scale: pressed ? 0.95 : 1 }],
+          },
+        ]}
         onPress={() => setModalVisible(true)}
-        activeOpacity={0.8}
       >
         <Text style={styles.fabText}>+</Text>
-      </TouchableOpacity>
+      </Pressable>
     </View>
   )
 }
 
-const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    backgroundColor: Colors.background,
-    paddingTop: 60,
-  },
-  title: {
-    ...Typography.screenTitle,
-    paddingHorizontal: Spacing.md,
-    marginBottom: Spacing.md,
-  },
-  list: {
-    paddingBottom: 120,
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: "rgba(0,0,0,0.5)",
-    justifyContent: "flex-end",
-  },
-  modalContent: {
-    backgroundColor: Colors.surface,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    padding: Spacing.lg,
-    paddingBottom: Platform.OS === "ios" ? 40 : Spacing.lg,
-  },
-  modalHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: Spacing.md,
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: "700",
-    color: Colors.text,
-  },
-  input: {
-    backgroundColor: Colors.background,
-    color: Colors.text,
-    fontSize: 16,
-    padding: Spacing.md,
-    borderRadius: 12,
-    marginBottom: Spacing.lg,
-  },
-  saveBtn: {
-    backgroundColor: Colors.primary,
-    paddingVertical: Spacing.md,
-    borderRadius: 12,
-    alignItems: "center",
-  },
-  saveBtnDisabled: {
-    opacity: 0.5,
-  },
-  saveBtnText: {
-    color: "#FFFFFF",
-    fontSize: 16,
-    fontWeight: "700",
-  },
-  fab: {
-    position: "absolute",
-    bottom: 32,
-    right: 24,
-    width: 56,
-    height: 56,
-    borderRadius: BorderRadius.button,
-    backgroundColor: Colors.primary,
-    alignItems: "center",
-    justifyContent: "center",
-    elevation: 8,
-    shadowColor: Colors.primary,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.4,
-    shadowRadius: 8,
-  },
-  fabText: {
-    fontSize: 32,
-    color: "#000",
-    fontWeight: "300",
-    marginTop: -2,
-  },
-  fabTextX: {
-    fontSize: 36,
-    marginTop: -4,
-  },
-})
+const createStyles = (colors: any) =>
+  StyleSheet.create({
+    screen: {
+      flex: 1,
+      backgroundColor: colors.background,
+      paddingTop: 60,
+    },
+    title: {
+      ...Typography.screenTitle,
+      color: colors.text,
+      paddingHorizontal: Spacing.md,
+      marginBottom: Spacing.md,
+    },
+    list: {
+      paddingBottom: 120,
+    },
+    modalOverlay: {
+      flex: 1,
+      backgroundColor: "rgba(0,0,0,0.5)",
+      justifyContent: "flex-end",
+    },
+    modalContent: {
+      backgroundColor: colors.surface,
+      borderTopLeftRadius: 20,
+      borderTopRightRadius: 20,
+      padding: Spacing.lg,
+      paddingBottom: Platform.OS === "ios" ? 40 : Spacing.lg,
+    },
+    modalHeader: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      marginBottom: Spacing.md,
+    },
+    modalTitle: {
+      fontSize: 18,
+      fontWeight: "700",
+      color: colors.text,
+    },
+    input: {
+      backgroundColor: colors.background,
+      color: colors.text,
+      fontSize: 16,
+      padding: Spacing.md,
+      borderRadius: 12,
+      marginBottom: Spacing.lg,
+    },
+    saveBtn: {
+      backgroundColor: colors.primary,
+      paddingVertical: Spacing.md,
+      borderRadius: 12,
+      alignItems: "center",
+    },
+    saveBtnDisabled: {
+      opacity: 0.5,
+    },
+    saveBtnText: {
+      color: "#FFFFFF",
+      fontSize: 16,
+      fontWeight: "700",
+    },
+    fab: {
+      position: "absolute",
+      bottom: 32,
+      right: 24,
+      width: 56,
+      height: 56,
+      borderRadius: BorderRadius.button,
+      alignItems: "center",
+      justifyContent: "center",
+      elevation: 4,
+      shadowColor: "#000",
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+    },
+    fabText: {
+      color: "#FFFFFF",
+      fontSize: 32,
+      fontWeight: "300",
+    },
+  })

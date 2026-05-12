@@ -5,16 +5,18 @@ import {
     Alert,
     KeyboardAvoidingView,
     Platform,
+    Pressable,
     StyleSheet,
     TextInput,
-    TouchableOpacity,
     View,
 } from "react-native"
 import { useNotes } from "../hooks/useNotes"
-import { Colors,Spacing } from "../themes"
+import { useTheme } from "../hooks/useTheme"
+import { Spacing } from "../themes"
 
 export function NoteEditorScreen() {
   const router = useRouter()
+  const { colors, isDark } = useTheme()
   const { noteId } = useLocalSearchParams<{ noteId?: string }>() // Did we come here with an existing note?
 
   const { notes, addNote, updateNote, deleteNote } = useNotes()
@@ -22,11 +24,14 @@ export function NoteEditorScreen() {
   // Find the note if editing an existing one
   const existingNote = notes.find((n) => n.id === noteId)
 
-  const [title, setTitle] = useState("")
-  const [content, setContent] = useState("")
+  const [title, setTitle] = useState(existingNote?.title || "")
+  const [content, setContent] = useState(existingNote?.content || "")
+
+  const styles = createStyles(colors)
 
   useEffect(() => {
-    if (existingNote) {
+    // Only update if current state is empty and existingNote is found (initial load)
+    if (existingNote && !title && !content) {
       setTitle(existingNote.title)
       setContent(existingNote.content)
     }
@@ -68,51 +73,59 @@ export function NoteEditorScreen() {
   }
 
   return (
-    // KeyboardAvoidingView pushes content up when keyboard appears
     <KeyboardAvoidingView
       style={styles.screen}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity
+        <Pressable
           onPress={() => {
             handleSave()
             router.back()
           }}
-          style={styles.backBtn}
+          style={({ pressed }) => [
+            styles.backBtn,
+            { opacity: pressed ? 0.6 : 1 },
+          ]}
         >
           <Ionicons
             name="chevron-back"
             size={28}
-            color={Colors.primary}
+            color={colors.primary}
           />
-        </TouchableOpacity>
+        </Pressable>
 
         <View style={styles.headerActions}>
-          <TouchableOpacity
+          <Pressable
             onPress={() => {
               handleSave()
               router.back()
             }}
-            style={styles.actionBtn}
+            style={({ pressed }) => [
+              styles.actionBtn,
+              { opacity: pressed ? 0.6 : 1 },
+            ]}
           >
             <Ionicons
               name="checkmark"
               size={28}
-              color={Colors.success || "#4CAF50"}
+              color={colors.textSecondary}
             />
-          </TouchableOpacity>
-          <TouchableOpacity
+          </Pressable>
+          <Pressable
             onPress={handleDelete}
-            style={styles.actionBtn}
+            style={({ pressed }) => [
+              styles.actionBtn,
+              { opacity: pressed ? 0.6 : 1 },
+            ]}
           >
             <Ionicons
               name="trash-outline"
               size={26}
-              color={Colors.danger}
+              color={colors.textSecondary}
             />
-          </TouchableOpacity>
+          </Pressable>
         </View>
       </View>
 
@@ -120,7 +133,7 @@ export function NoteEditorScreen() {
       <TextInput
         style={styles.titleInput}
         placeholder="Title"
-        placeholderTextColor={Colors.textTertiary}
+        placeholderTextColor={colors.textTertiary}
         value={title}
         onChangeText={setTitle}
         returnKeyType="next"
@@ -133,7 +146,7 @@ export function NoteEditorScreen() {
         ref={contentRef}
         style={styles.contentInput}
         placeholder="Start writing..."
-        placeholderTextColor={Colors.textTertiary}
+        placeholderTextColor={colors.textTertiary}
         value={content}
         onChangeText={setContent}
         multiline // Allow multiple lines
@@ -144,42 +157,43 @@ export function NoteEditorScreen() {
   )
 }
 
-const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    backgroundColor: Colors.background,
-    paddingTop: 60,
-  },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingHorizontal: Spacing.md,
-    marginBottom: Spacing.md,
-  },
-  backBtn: {
-    padding: 4,
-  },
-  headerActions: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  actionBtn: {
-    padding: 8,
-    marginLeft: Spacing.sm,
-  },
-  titleInput: {
-    fontSize: 28,
-    fontWeight: "700",
-    color: Colors.text,
-    paddingHorizontal: Spacing.md,
-    marginBottom: Spacing.sm,
-  },
-  contentInput: {
-    flex: 1,
-    fontSize: 16,
-    color: Colors.text,
-    paddingHorizontal: Spacing.md,
-    lineHeight: 24,
-  },
-})
+const createStyles = (colors: any) =>
+  StyleSheet.create({
+    screen: {
+      flex: 1,
+      backgroundColor: colors.background,
+      paddingTop: 60,
+    },
+    header: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      paddingHorizontal: Spacing.md,
+      marginBottom: Spacing.md,
+    },
+    backBtn: {
+      padding: 4,
+    },
+    headerActions: {
+      flexDirection: "row",
+      alignItems: "center",
+    },
+    actionBtn: {
+      padding: 8,
+      marginLeft: Spacing.sm,
+    },
+    titleInput: {
+      fontSize: 28,
+      fontWeight: "700",
+      color: colors.text,
+      paddingHorizontal: Spacing.md,
+      marginBottom: Spacing.sm,
+    },
+    contentInput: {
+      flex: 1,
+      fontSize: 16,
+      color: colors.text,
+      paddingHorizontal: Spacing.md,
+      lineHeight: 24,
+    },
+  })

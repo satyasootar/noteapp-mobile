@@ -11,12 +11,12 @@ export const useNotes = () => {
     loadNotes()
   }, [])
 
-  const loadNotes = async () => {
+  const loadNotes = useCallback(async () => {
     const notes = await getNotes()
     notes.sort((a, b) => b.updatedAt - a.updatedAt)
     setNotes(notes)
     setLoading(false)
-  }
+  }, [])
 
   const addNotes = useCallback(async (title: string, content: string) => {
     const newNote: Note = {
