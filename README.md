@@ -60,7 +60,7 @@ https://github.com/user-attachments/assets/56c6d2e0-adb2-47d5-a010-348874e53feb
 
    ```bash
    git clone https://github.com/satyasootar/noteapp-mobile
-   cd fluxnotes
+   cd noteapp-mobile
    ```
 
 2. **Install dependencies**
