@@ -28,9 +28,18 @@ A modern, fast, and responsive Note-taking and Task management application built
 - **Device Optimized**: Custom layouts tailored for both small-screen phones and large-screen tablets using `useWindowDimensions`.
 - **Adaptive Spacing**: Perfectly consistent grid margins and paddings across all resolutions.
 
-## 📸 Screenshots
+## 📸 Screenshots & Demo
 
 <div align="center">
+  <h3>Application Demo</h3>
+  <!-- Replace the URL below with your video link (e.g., YouTube, Loom, or a raw mp4 from GitHub) -->
+  <a href="URL_TO_YOUR_VIDEO_DEMO">
+    <img src="assets/images/placeholder-video.png" width="800" alt="FluxNotes Video Demo" />
+  </a>
+  <p><i>Click the image above to watch the feature walkthrough</i></p>
+
+  <br/>
+
   <table>
     <tr>
       <td><img src="https://github.com/user-attachments/assets/d189a95e-6a48-407d-8399-fd90a9a9af58" width="250" alt="Notes Screen" /><br/><sub>Notes Grid</sub></td>
@@ -52,7 +61,7 @@ A modern, fast, and responsive Note-taking and Task management application built
 1. **Clone the repository**
 
    ```bash
-   git clone https://github.com/yourusername/fluxnotes.git
+   git clone https://github.com/satyasootar/noteapp-mobile
    cd fluxnotes
    ```
 
@@ -82,4 +91,3 @@ A modern, fast, and responsive Note-taking and Task management application built
 - `src/hooks/` - Logical layer (useNotes, useTasks, useTheme)
 - `src/screen/` - Main screen implementations
 - `src/themes/` - Palette, Spacing, and Typography definitions
-
