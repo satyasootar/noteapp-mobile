@@ -33,9 +33,9 @@ A modern, fast, and responsive Note-taking and Task management application built
 <div align="center">
   <table>
     <tr>
-      <td><img src="assets/images/placeholder-notes.png" width="250" alt="Notes Screen" /><br/><sub>Notes Grid</sub></td>
-      <td><img src="assets/images/placeholder-tasks.png" width="250" alt="Tasks Screen" /><br/><sub>Task List</sub></td>
-      <td><img src="assets/images/placeholder-dark.png" width="250" alt="Dark Mode" /><br/><sub>Dark Mode</sub></td>
+      <td><img src="https://github.com/user-attachments/assets/d189a95e-6a48-407d-8399-fd90a9a9af58" width="250" alt="Notes Screen" /><br/><sub>Notes Grid</sub></td>
+      <td><img src="https://github.com/user-attachments/assets/7fc1ae2e-bd3f-4367-a40c-dbb3092cf290" width="250" alt="Tasks Screen" /><br/><sub>Task List</sub></td>
+      <td><img src="https://github.com/user-attachments/assets/1b492110-6186-4f13-b89a-837e51beb14d" width="250" alt="Light Mode" /><br/><sub>Light Mode</sub></td>
     </tr>
   </table>
 </div>
