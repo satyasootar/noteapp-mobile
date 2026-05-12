@@ -26,20 +26,22 @@ export const saveNote = async (notes: Note[]) => {
   }
 }
 
-export const getTask = async () => {
+export const getTask = async (): Promise<Task[]> => {
   try {
     const data = await AsyncStorage.getItem(TASK_KEY)
+
     if (data) {
-      return data
+      return JSON.parse(data)
     } else {
       return []
     }
   } catch (error) {
     console.log("Failed to get task: ", error)
+    return []
   }
 }
 
-export const saveTask = async (task: Task) => {
+export const saveTask = async (task: Task[]) => {
   try {
     await AsyncStorage.setItem(TASK_KEY, JSON.stringify(task))
   } catch (error) {
