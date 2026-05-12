@@ -1,56 +1,85 @@
-# Welcome to your Expo app 👋
+# 📝 Notes app
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A modern, fast, and responsive Note-taking and Task management application built with Expo and React Native. FluxNotes offers a seamless experience across mobile and tablet devices with a focus on clean UI/UX and system-integrated theming.
 
-## Get started
+## ✨ Features
 
-1. Install dependencies
+### 🗒️ Advanced Note Management
+
+- **Efficient Grid Layout**: Browse your notes in a clean, responsive grid that adapts to your screen size.
+- **Rich Note Editor**: Auto-saving capabilities with a focus on distraction-free writing.
+- **Selection Mode**: Long-press to select multiple notes for bulk deletion.
+
+### ⚡ Smart Task Tracking
+
+- **Unified Workflow**: Manage your to-dos alongside your notes.
+- **Quick Entry**: Add tasks instantly via a sleek modal interface.
+- **Auto-Sorting**: Completed tasks automatically move to the bottom to keep your focus on pending items.
+
+### 🎨 Premium UI/UX
+
+- **Dynamic Theming**: Full support for Light and Dark modes.
+- **Custom Theme Toggle**: A unique, custom-animated toggle with integrated Sun/Moon indicators inside the slider.
+- **System-Aware**: Automatically detects and switches themes based on your OS settings.
+- **Pressable Feedback**: Modern interaction patterns using `Pressable` for consistent haptic-like visual feedback.
+
+### 📱 Fully Responsive
+
+- **Device Optimized**: Custom layouts tailored for both small-screen phones and large-screen tablets using `useWindowDimensions`.
+- **Adaptive Spacing**: Perfectly consistent grid margins and paddings across all resolutions.
+
+## 📸 Screenshots
+
+<div align="center">
+  <table>
+    <tr>
+      <td><img src="assets/images/placeholder-notes.png" width="250" alt="Notes Screen" /><br/><sub>Notes Grid</sub></td>
+      <td><img src="assets/images/placeholder-tasks.png" width="250" alt="Tasks Screen" /><br/><sub>Task List</sub></td>
+      <td><img src="assets/images/placeholder-dark.png" width="250" alt="Dark Mode" /><br/><sub>Dark Mode</sub></td>
+    </tr>
+  </table>
+</div>
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js (Latest LTS)
+- Expo Go app on your physical device or an Emulator (Android Studio / Xcode)
+
+### Installation
+
+1. **Clone the repository**
+
+   ```bash
+   git clone https://github.com/yourusername/fluxnotes.git
+   cd fluxnotes
+   ```
+
+2. **Install dependencies**
 
    ```bash
    npm install
    ```
 
-2. Start the app
-
+3. **Start the development server**
    ```bash
    npx expo start
    ```
 
-In the output, you'll find options to open the app in a
+## 🛠️ Tech Stack
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+- **Framework**: [Expo](https://expo.dev) / [React Native](https://reactnative.dev)
+- **Navigation**: [Expo Router](https://docs.expo.dev/router/introduction/) (Link-based)
+- **Styling**: Creative `StyleSheet` with dynamic Design Tokens
+- **Icons**: Expo Vector Icons (Ionicons)
+- **State Management**: Custom React Hooks & Context API
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## 🧹 Project Structure
 
-## Get a fresh project
+- `src/app/` - File-based routing configuration
+- `src/components/` - Reusable UI components (NoteCard, TaskItem, ThemeToggle)
+- `src/hooks/` - Logical layer (useNotes, useTasks, useTheme)
+- `src/screen/` - Main screen implementations
+- `src/themes/` - Palette, Spacing, and Typography definitions
 
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-### Other setup steps
-
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
