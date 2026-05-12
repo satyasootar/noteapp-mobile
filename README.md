@@ -32,11 +32,9 @@ A modern, fast, and responsive Note-taking and Task management application built
 
 <div align="center">
   <h3>Application Demo</h3>
-  <!-- Replace the URL below with your video link (e.g., YouTube, Loom, or a raw mp4 from GitHub) -->
-  <a href="URL_TO_YOUR_VIDEO_DEMO">
-    <img src="assets/images/placeholder-video.png" width="800" alt="FluxNotes Video Demo" />
-  </a>
-  <p><i>Click the image above to watch the feature walkthrough</i></p>
+ 
+
+https://github.com/user-attachments/assets/56c6d2e0-adb2-47d5-a010-348874e53feb
 
   <br/>
 
