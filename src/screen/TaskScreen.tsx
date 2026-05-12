@@ -11,15 +11,18 @@ import {
     StyleSheet,
     Text,
     TextInput,
+    useWindowDimensions,
     View,
 } from "react-native"
 import { EmptyState } from "../components/EmptyState"
 import { TaskItem } from "../components/TaskItem"
+import { ThemeToggle } from "../components/ThemeToggle"
 import { useTasks } from "../hooks/useTasks"
 import { useTheme } from "../hooks/useTheme"
 import { BorderRadius,Spacing,Typography } from "../themes"
 
 export function TasksScreen() {
+  const { width, height } = useWindowDimensions()
   const { colors, isDark } = useTheme()
   const { tasks, loading, addTask, toggleTask, deleteTask, loadTask } =
     useTasks()
@@ -32,7 +35,7 @@ export function TasksScreen() {
     }, [loadTask]),
   )
 
-  const styles = createStyles(colors)
+  const styles = createStyles(colors, width, height)
 
   const handleAdd = async () => {
     if (!inputText.trim()) return
@@ -45,7 +48,10 @@ export function TasksScreen() {
     <View style={styles.screen}>
       <StatusBar barStyle={isDark ? "light-content" : "dark-content"} />
 
-      <Text style={styles.title}>Tasks</Text>
+      <View style={styles.header}>
+        <Text style={styles.title}>Tasks</Text>
+        <ThemeToggle />
+      </View>
 
       {/* Active tasks at top, completed at bottom */}
       {tasks.length === 0 && !loading ? (
@@ -142,33 +148,48 @@ export function TasksScreen() {
   )
 }
 
-const createStyles = (colors: any) =>
-  StyleSheet.create({
+const createStyles = (colors: any, width: number, height: number) => {
+  const isTablet = width > 768
+  const headerPaddingTop = Platform.OS === "ios" ? (height > 800 ? 60 : 40) : 20
+
+  return StyleSheet.create({
     screen: {
       flex: 1,
       backgroundColor: colors.background,
-      paddingTop: 60,
+      paddingTop: headerPaddingTop,
+    },
+    header: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      paddingHorizontal: isTablet ? Spacing.xl : Spacing.md,
+      marginBottom: Spacing.md,
     },
     title: {
       ...Typography.screenTitle,
       color: colors.text,
-      paddingHorizontal: Spacing.md,
-      marginBottom: Spacing.md,
+      fontSize: isTablet ? 42 : 32,
     },
     list: {
       paddingBottom: 120,
+      paddingHorizontal: isTablet ? Spacing.xl : 0,
     },
     modalOverlay: {
       flex: 1,
       backgroundColor: "rgba(0,0,0,0.5)",
       justifyContent: "flex-end",
+      alignItems: isTablet ? "center" : "stretch",
     },
     modalContent: {
       backgroundColor: colors.surface,
       borderTopLeftRadius: 20,
       borderTopRightRadius: 20,
+      borderBottomLeftRadius: isTablet ? 20 : 0,
+      borderBottomRightRadius: isTablet ? 20 : 0,
       padding: Spacing.lg,
       paddingBottom: Platform.OS === "ios" ? 40 : Spacing.lg,
+      width: isTablet ? 500 : "100%",
+      marginBottom: isTablet ? height * 0.1 : 0,
     },
     modalHeader: {
       flexDirection: "row",
@@ -177,14 +198,14 @@ const createStyles = (colors: any) =>
       marginBottom: Spacing.md,
     },
     modalTitle: {
-      fontSize: 18,
+      fontSize: isTablet ? 22 : 18,
       fontWeight: "700",
       color: colors.text,
     },
     input: {
       backgroundColor: colors.background,
       color: colors.text,
-      fontSize: 16,
+      fontSize: isTablet ? 18 : 16,
       padding: Spacing.md,
       borderRadius: 12,
       marginBottom: Spacing.lg,
@@ -199,28 +220,31 @@ const createStyles = (colors: any) =>
       opacity: 0.5,
     },
     saveBtnText: {
-      color: "#FFFFFF",
-      fontSize: 16,
+      color: "#000",
+      fontSize: isTablet ? 18 : 16,
       fontWeight: "700",
     },
     fab: {
       position: "absolute",
-      bottom: 32,
-      right: 24,
-      width: 56,
-      height: 56,
-      borderRadius: BorderRadius.button,
+      bottom: isTablet ? 48 : 32,
+      right: isTablet ? 48 : 24,
+      width: isTablet ? 72 : 56,
+      height: isTablet ? 72 : 56,
+      borderRadius: isTablet ? 36 : BorderRadius.button,
+      backgroundColor: colors.primary,
       alignItems: "center",
       justifyContent: "center",
-      elevation: 4,
-      shadowColor: "#000",
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.25,
-      shadowRadius: 3.84,
+      elevation: 8,
+      shadowColor: colors.primary,
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.4,
+      shadowRadius: 8,
     },
     fabText: {
-      color: "#FFFFFF",
-      fontSize: 32,
+      fontSize: isTablet ? 40 : 32,
+      color: "#000",
       fontWeight: "300",
+      marginTop: -2,
     },
   })
+}

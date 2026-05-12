@@ -8,6 +8,7 @@ import {
     Pressable,
     StyleSheet,
     TextInput,
+    useWindowDimensions,
     View,
 } from "react-native"
 import { useNotes } from "../hooks/useNotes"
@@ -16,8 +17,9 @@ import { Spacing } from "../themes"
 
 export function NoteEditorScreen() {
   const router = useRouter()
+  const { width, height } = useWindowDimensions()
   const { colors, isDark } = useTheme()
-  const { noteId } = useLocalSearchParams<{ noteId?: string }>() // Did we come here with an existing note?
+  const { noteId } = useLocalSearchParams<{ noteId?: string }>()
 
   const { notes, addNote, updateNote, deleteNote } = useNotes()
 
@@ -27,7 +29,7 @@ export function NoteEditorScreen() {
   const [title, setTitle] = useState(existingNote?.title || "")
   const [content, setContent] = useState(existingNote?.content || "")
 
-  const styles = createStyles(colors)
+  const styles = createStyles(colors, width, height)
 
   useEffect(() => {
     // Only update if current state is empty and existingNote is found (initial load)
@@ -129,7 +131,7 @@ export function NoteEditorScreen() {
         </View>
       </View>
 
-      {/* Title input */}
+      {/* Inputs */}
       <TextInput
         style={styles.titleInput}
         placeholder="Title"
@@ -157,18 +159,21 @@ export function NoteEditorScreen() {
   )
 }
 
-const createStyles = (colors: any) =>
-  StyleSheet.create({
+const createStyles = (colors: any, width: number, height: number) => {
+  const isTablet = width > 768
+  const headerPaddingTop = Platform.OS === "ios" ? (height > 800 ? 60 : 40) : 20
+
+  return StyleSheet.create({
     screen: {
       flex: 1,
       backgroundColor: colors.background,
-      paddingTop: 60,
+      paddingTop: headerPaddingTop,
     },
     header: {
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "center",
-      paddingHorizontal: Spacing.md,
+      paddingHorizontal: isTablet ? Spacing.xl : Spacing.md,
       marginBottom: Spacing.md,
     },
     backBtn: {
@@ -183,17 +188,18 @@ const createStyles = (colors: any) =>
       marginLeft: Spacing.sm,
     },
     titleInput: {
-      fontSize: 28,
+      fontSize: isTablet ? 40 : 28,
       fontWeight: "700",
       color: colors.text,
-      paddingHorizontal: Spacing.md,
+      paddingHorizontal: isTablet ? Spacing.xl : Spacing.md,
       marginBottom: Spacing.sm,
     },
     contentInput: {
       flex: 1,
-      fontSize: 16,
+      fontSize: isTablet ? 20 : 16,
       color: colors.text,
-      paddingHorizontal: Spacing.md,
-      lineHeight: 24,
+      paddingHorizontal: isTablet ? Spacing.xl : Spacing.md,
+      lineHeight: isTablet ? 30 : 24,
     },
   })
+}

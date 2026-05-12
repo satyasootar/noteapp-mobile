@@ -4,20 +4,24 @@ import React,{ useCallback,useState } from "react"
 import {
     Alert,
     FlatList,
+    Platform,
     Pressable,
     StatusBar,
     StyleSheet,
     Text,
+    useWindowDimensions,
     View,
 } from "react-native"
 import { EmptyState } from "../components/EmptyState"
 import { NoteCard } from "../components/NoteCard"
+import { ThemeToggle } from "../components/ThemeToggle"
 import { useNotes } from "../hooks/useNotes"
 import { useTheme } from "../hooks/useTheme"
 import { BorderRadius,Spacing,Typography } from "../themes"
 
 export function NotesScreen() {
   const router = useRouter()
+  const { width, height } = useWindowDimensions()
   const { colors, isDark } = useTheme()
   const { notes, loading, deleteNote, loadNotes } = useNotes()
   const [selectedIds, setSelectedIds] = useState<string[]>([])
@@ -29,8 +33,9 @@ export function NotesScreen() {
   )
 
   const isSelectionMode = selectedIds.length > 0
-
-  const styles = createStyles(colors)
+  const isTablet = width > 768
+  const numColumns = isTablet ? 3 : 2
+  const styles = createStyles(colors, width, height)
 
   const handleLongPress = (id: string) => {
     if (!isSelectionMode) {
@@ -121,7 +126,10 @@ export function NotesScreen() {
           </Pressable>
         </View>
       ) : (
-        <Text style={styles.title}>Notes</Text>
+        <View style={styles.header}>
+          <Text style={styles.title}>Notes</Text>
+          <ThemeToggle />
+        </View>
       )}
 
       {notes.length === 0 && !loading ? (
@@ -131,10 +139,11 @@ export function NotesScreen() {
         />
       ) : (
         <FlatList
+          key={numColumns} // Force re-render when column count changes
           data={notes}
           renderItem={renderNote}
           keyExtractor={(item) => item.id}
-          numColumns={2}
+          numColumns={numColumns}
           columnWrapperStyle={styles.row}
           contentContainerStyle={styles.list}
           showsVerticalScrollIndicator={false}
@@ -159,32 +168,41 @@ export function NotesScreen() {
   )
 }
 
-const createStyles = (colors: any) =>
-  StyleSheet.create({
+const createStyles = (colors: any, width: number, height: number) => {
+  const isTablet = width > 768
+  const headerPaddingTop = Platform.OS === "ios" ? (height > 800 ? 60 : 40) : 20
+
+  return StyleSheet.create({
     screen: {
       flex: 1,
       backgroundColor: colors.background,
-      paddingTop: 60, // Space for status bar
+      paddingTop: headerPaddingTop,
+    },
+    header: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      paddingHorizontal: isTablet ? Spacing.xl : Spacing.md,
+      marginBottom: Spacing.md,
     },
     title: {
       ...Typography.screenTitle,
       color: colors.text,
-      paddingHorizontal: Spacing.md,
-      marginBottom: Spacing.md,
+      fontSize: isTablet ? 42 : 32,
     },
     selectionHeader: {
       flexDirection: "row",
       alignItems: "center",
       paddingHorizontal: Spacing.md,
-      height: 50,
+      height: 56,
       marginBottom: Spacing.md,
-      backgroundColor: colors.surface, // Selection bar background
+      backgroundColor: colors.surface,
       borderRadius: 12,
-      marginHorizontal: Spacing.md,
+      marginHorizontal: isTablet ? Spacing.xl : Spacing.md,
     },
     selectionCount: {
       flex: 1,
-      fontSize: 18,
+      fontSize: isTablet ? 22 : 18,
       fontWeight: "700",
       color: colors.text,
       marginLeft: Spacing.md,
@@ -193,34 +211,34 @@ const createStyles = (colors: any) =>
       padding: 8,
     },
     list: {
-      paddingHorizontal: Spacing.sm,
+      paddingHorizontal: isTablet ? Spacing.lg : Spacing.sm,
       paddingBottom: 100,
     },
     row: {
-      justifyContent: "space-between",
+      justifyContent: "flex-start",
+      gap: isTablet ? Spacing.lg : Spacing.sm,
     },
     fab: {
-      position: "absolute", // Float on top of everything
-      bottom: 32,
-      right: 24,
-      width: 56,
-      height: 56,
-      borderRadius: BorderRadius.button,
+      position: "absolute",
+      bottom: isTablet ? 48 : 32,
+      right: isTablet ? 48 : 24,
+      width: isTablet ? 72 : 56,
+      height: isTablet ? 72 : 56,
+      borderRadius: isTablet ? 36 : BorderRadius.button,
       backgroundColor: colors.primary,
       alignItems: "center",
       justifyContent: "center",
-      // Shadow for Android
       elevation: 8,
-      // Shadow for iOS
       shadowColor: colors.primary,
       shadowOffset: { width: 0, height: 4 },
       shadowOpacity: 0.4,
       shadowRadius: 8,
     },
     fabText: {
-      fontSize: 32,
+      fontSize: isTablet ? 40 : 32,
       color: "#000",
       fontWeight: "300",
       marginTop: -2,
     },
   })
+}

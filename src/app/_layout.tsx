@@ -1,7 +1,7 @@
 import { Stack } from "expo-router"
-import { useTheme } from "../hooks/useTheme"
+import { ThemeProvider,useTheme } from "../hooks/useTheme"
 
-export default function RootLayout() {
+function StackLayout() {
   const { colors } = useTheme()
 
   return (
@@ -14,5 +14,13 @@ export default function RootLayout() {
       <Stack.Screen name="(tabs)" />
       <Stack.Screen name="editor" />
     </Stack>
+  )
+}
+
+export default function RootLayout() {
+  return (
+    <ThemeProvider>
+      <StackLayout />
+    </ThemeProvider>
   )
 }
