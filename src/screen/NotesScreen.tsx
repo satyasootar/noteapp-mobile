@@ -139,7 +139,7 @@ export function NotesScreen() {
         />
       ) : (
         <FlatList
-          key={numColumns} // Force re-render when column count changes
+          key={numColumns}
           data={notes}
           renderItem={renderNote}
           keyExtractor={(item) => item.id}
@@ -217,6 +217,7 @@ const createStyles = (colors: any, width: number, height: number) => {
     row: {
       justifyContent: "flex-start",
       gap: isTablet ? Spacing.lg : Spacing.sm,
+      marginBottom: isTablet ? Spacing.lg : Spacing.sm, // Added consistency for vertical spacing
     },
     fab: {
       position: "absolute",
